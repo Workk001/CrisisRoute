@@ -1,5 +1,32 @@
+```gitignore
+# ==========================
+# Dependencies
+# ==========================
+node_modules/
+
+# ==========================
+# Build Output
+# ==========================
+dist/
+dist-ssr/
+build/
+coverage/
+
+# ==========================
+# Environment Variables
+# ==========================
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Local overrides
+*.local
+
+# ==========================
 # Logs
-logs
+# ==========================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,18 +34,71 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# ==========================
+# Cache
+# ==========================
+.cache/
+.parcel-cache/
+.vite/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
 
-# Editor directories and files
+# ==========================
+# Editors & IDEs
+# ==========================
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+.idea/
+*.iml
+
+# Visual Studio
 *.suo
+*.user
+*.userossc
+*.sln.docstates
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ==========================
+# Operating System Files
+# ==========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==========================
+# Package Managers
+# ==========================
+.pnp
+.pnp.js
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# ==========================
+# Temporary Files
+# ==========================
+tmp/
+temp/
+*.tmp
+
+# ==========================
+# Miscellaneous
+# ==========================
+.vercel/
+.netlify/
+.firebase/
+.turbo/
+.out/
+```
