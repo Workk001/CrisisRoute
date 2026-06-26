@@ -193,7 +193,7 @@ export async function startCrisisSession(userCrisisText) {
     generationConfig: {
       temperature: 0.2,
       topP: 0.8,
-      maxOutputTokens: 2048,
+      maxOutputTokens: 8192,
     },
     systemInstruction: SYSTEM_PROMPT,
   });
@@ -209,6 +209,7 @@ export async function startCrisisSession(userCrisisText) {
     });
     clearTimeout(timeoutId);
     const raw = result.response.text();
+    console.log("[CrisisRoute] Raw Gemini response:", raw);
     return parseGeminiResponse(raw);
   } catch (err) {
     clearTimeout(timeoutId);
@@ -240,6 +241,7 @@ export async function sendFollowUp(message) {
     });
     clearTimeout(timeoutId);
     const raw = result.response.text();
+    console.log("[CrisisRoute] Raw follow-up response:", raw);
     return parseGeminiResponse(raw);
   } catch (err) {
     clearTimeout(timeoutId);
@@ -258,41 +260,69 @@ export function resetSession() {
 }
 
 /**
+ * Validates parsed JSON and returns structured result.
+ */
+function validateAndReturn(parsed) {
+  const required = ["crisis_summary", "immediate_action", "options", "budget_status", "what_to_do_now"];
+  for (const field of required) {
+    if (!parsed[field]) throw new Error(`Missing field: ${field}`);
+  }
+  if (!Array.isArray(parsed.options)) throw new Error("Options must be array");
+  return { success: true, data: parsed };
+}
+
+/**
  * Parses Gemini response text, extracting the JSON structure and verifying fields.
  */
 export function parseGeminiResponse(raw) {
   try {
-    // Remove markdown fences if Gemini wraps in them despite instructions
     const cleaned = raw.replace(/```json|```/g, "").trim();
 
-    // Extract JSON even if surrounded by stray text
+    // Try direct parse first
+    try {
+      const direct = JSON.parse(cleaned);
+      return validateAndReturn(direct);
+    } catch (e) {}
+
+    // Try extracting JSON object
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("No JSON object found in response");
-    }
+    if (!jsonMatch) throw new Error("No JSON found in response");
 
     const parsed = JSON.parse(jsonMatch[0]);
+    return validateAndReturn(parsed);
 
-    // Basic schema validation
-    const required = ["crisis_summary", "immediate_action", "options", "budget_status", "what_to_do_now"];
-    for (const field of required) {
-      if (parsed[field] === undefined) {
-        throw new Error(`Missing required field: ${field}`);
-      }
-    }
-
-    // Note: options can be empty in edge cases (e.g., vague input or non-travel crisis),
-    // but the schema validation in the rule 4 says:
-    // "validate options array is non-empty."
-    // Let's enforce that unless it's an edge case where it's intentionally empty (like vague input / non-travel),
-    // but let's check rule 4: "validate required fields, validate options array is non-empty. Never assume the response is clean JSON."
-    // So we validate that options is an array. If we require it to be non-empty, we do:
-    if (!Array.isArray(parsed.options)) {
-      throw new Error("options must be an array");
-    }
-
-    return { success: true, data: parsed };
   } catch (err) {
-    return { success: false, raw, error: err.message };
+    let crisis_summary = null;
+    let immediate_action = null;
+    try {
+      const summaryMatch = raw.match(/"crisis_summary"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      if (summaryMatch) {
+        crisis_summary = summaryMatch[1]
+          .replace(/\\"/g, '"')
+          .replace(/\\n/g, '\n')
+          .replace(/\\r/g, '\r')
+          .replace(/\\t/g, '\t')
+          .replace(/\\\\/g, '\\');
+      }
+      const actionMatch = raw.match(/"immediate_action"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      if (actionMatch) {
+        immediate_action = actionMatch[1]
+          .replace(/\\"/g, '"')
+          .replace(/\\n/g, '\n')
+          .replace(/\\r/g, '\r')
+          .replace(/\\t/g, '\t')
+          .replace(/\\\\/g, '\\');
+      }
+    } catch (e) {}
+
+    return {
+      success: true,
+      data: {
+        is_fallback: true,
+        raw,
+        crisis_summary,
+        immediate_action
+      }
+    };
   }
 }

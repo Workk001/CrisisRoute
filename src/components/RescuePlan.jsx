@@ -161,6 +161,57 @@ function RefundTip({ tip }) {
 function RescuePlan({ rescuePlan }) {
   if (!rescuePlan) return null
 
+  if (rescuePlan.is_fallback) {
+    const hasSummary = !!rescuePlan.crisis_summary;
+    const hasAction = !!rescuePlan.immediate_action;
+
+    return (
+      <div className="space-y-4">
+        {/* CSS to hide ChatFollowUp */}
+        <style>{`
+          .mt-6.space-y-4 {
+            display: none !important;
+          }
+        `}</style>
+
+        <div className="rounded-lg p-6 border bg-yellow-950 border-yellow-700 space-y-4">
+          <p className="font-semibold text-lg text-yellow-400">
+            ⚠️ Couldn't fully parse the rescue plan. Here's what we recovered:
+          </p>
+          {(hasSummary || hasAction) ? (
+            <div className="space-y-3">
+              {hasSummary && (
+                <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+                  <p className="text-gray-500 text-xs font-semibold mb-1">Crisis Summary</p>
+                  <p className="text-gray-300 text-sm">{rescuePlan.crisis_summary}</p>
+                </div>
+              )}
+              {hasAction && (
+                <div className="bg-orange-950 border-l-4 border-orange-500 rounded-r-lg p-4">
+                  <p className="text-orange-400 font-semibold text-xs mb-1">⚡ Do This RIGHT NOW</p>
+                  <p className="text-white text-sm">{rescuePlan.immediate_action}</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-gray-300 text-sm">
+              Gemini response was incomplete. Please try again — this sometimes happens on complex routes.
+            </p>
+          )}
+        </div>
+        
+        {/* Always show Try Again button */}
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-base"
+        >
+          🔄 Try Again
+        </button>
+      </div>
+    )
+  }
+
   const hasOptions = Array.isArray(rescuePlan.options) && rescuePlan.options.length > 0
 
   return (
