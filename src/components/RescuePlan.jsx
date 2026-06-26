@@ -12,9 +12,11 @@ function ImmediateAction({ action }) {
   if (!action) return null
 
   return (
-    <div className="bg-orange-950 border-l-4 border-orange-500 rounded-r-lg p-4 sm:p-5">
-      <p className="text-orange-400 font-semibold text-sm mb-1">⚡ Do This RIGHT NOW</p>
-      <p className="text-white text-base sm:text-lg">{action}</p>
+    <div className="bg-[#111111] border-l-4 border-[#ff6b00] p-5 mb-4 rescue-section rounded-none">
+      <p className="text-[#ff6b00] font-mono text-xs tracking-widest uppercase mb-3 flex items-center gap-1.5">
+        <span className="heartbeat">⚡</span> DO THIS RIGHT NOW
+      </p>
+      <p className="text-white font-display font-bold text-xl leading-snug">{action}</p>
     </div>
   )
 }
@@ -22,64 +24,90 @@ function ImmediateAction({ action }) {
 function OptionCard({ option }) {
   const icon = MODE_ICONS[option.mode] || '🔹'
 
+  // Extract price and class
+  // e.g. "₹200 (Sleeper Class)" or "₹1,299"
+  const priceParts = option.estimated_cost.match(/(₹[\d,]+)(?:\s*\((.+)\))?/)
+  const displayPrice = priceParts ? priceParts[1] : option.estimated_cost
+  const displayClass = priceParts && priceParts[2] ? priceParts[2] : ''
+
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 sm:p-5 space-y-3">
-      {/* Header row */}
-      <div className="flex items-start justify-between gap-2">
+    <div className="bg-[#111111] border border-[#2a2a2a] hover:border-[#ff2d2d] hover:-translate-y-0.5 rounded-none p-0 mb-3 transition-all duration-150 overflow-hidden rescue-section">
+      {/* Card header strip */}
+      <div className="bg-[#1a1a1a] px-4 py-3 flex justify-between items-center">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-xl flex-shrink-0">{icon}</span>
-          <div className="min-w-0">
-            <p className="text-white font-semibold text-base truncate">
-              #{option.rank} {option.operator}
-            </p>
-            <p className="text-gray-400 text-sm truncate">{option.identifier}</p>
-          </div>
+          <span className="text-lg flex-shrink-0">{icon}</span>
+          <span className="font-mono text-[#444444] text-xs flex-shrink-0">#{option.rank}</span>
+          <span className="font-display font-bold text-white text-sm uppercase truncate">
+            {option.operator}
+          </span>
         </div>
 
         {/* Confidence badge */}
-        <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${
+        <span className={`font-mono text-xs px-2 py-1 rounded-none uppercase tracking-wide font-bold flex-shrink-0 ${
           option.confidence === 'confirmed'
-            ? 'bg-green-900 text-green-400'
-            : 'bg-yellow-900 text-yellow-400'
+            ? 'bg-[#00cc44] text-[#080808]'
+            : 'bg-[#ffcc00] text-[#080808]'
         }`}>
-          {option.confidence === 'confirmed' ? '✅ Confirmed' : '⚠️ Verify'}
+          {option.confidence === 'confirmed' ? 'CONFIRMED' : 'VERIFY'}
         </span>
       </div>
 
-      {/* Times and cost */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-        <div>
-          <p className="text-gray-500 text-xs">Departure</p>
-          <p className="text-gray-200">{option.departure}</p>
+      {/* Identifier below operator */}
+      <div className="font-mono text-[#888888] text-xs px-4 pb-2 pt-1">
+        {option.identifier}
+      </div>
+
+      <div className="border-t border-[#2a2a2a]" />
+
+      {/* Times row */}
+      <div className="px-4 py-3 grid grid-cols-2 gap-4">
+        <div className="min-w-0">
+          <p className="font-mono text-[#444444] text-xs tracking-widest mb-1 uppercase">DEP</p>
+          <p className="font-mono font-bold text-white text-xl sm:text-2xl">{option.departure.split(' from ')[0]}</p>
+          <p className="font-mono text-[#888888] text-xs mt-1 truncate">
+            {option.departure.split(' from ')[1] || ''}
+          </p>
         </div>
-        <div>
-          <p className="text-gray-500 text-xs">Arrival</p>
-          <p className="text-gray-200">{option.arrival}</p>
+        <div className="min-w-0">
+          <p className="font-mono text-[#444444] text-xs tracking-widest mb-1 uppercase">ARR</p>
+          <p className="font-mono font-bold text-white text-xl sm:text-2xl">{option.arrival.split(' at ')[0]}</p>
+          <p className="font-mono text-[#888888] text-xs mt-1 truncate">
+            {option.arrival.split(' at ')[1] || ''}
+          </p>
         </div>
       </div>
 
-      {/* Cost + budget fit */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <p className="text-white font-semibold text-base">{option.estimated_cost}</p>
-        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+      <div className="border-t border-[#2a2a2a]" />
+
+      {/* Footer row */}
+      <div className="px-4 py-3 flex justify-between items-center">
+        <div>
+          <span className="font-mono font-bold text-white text-xl">{displayPrice}</span>
+          {displayClass && (
+            <span className="font-mono text-[#888888] text-xs ml-1">({displayClass})</span>
+          )}
+        </div>
+
+        {/* fits_budget badge */}
+        <span className={`font-mono text-xs px-2 py-1 rounded-none uppercase tracking-wide font-bold ${
           option.fits_budget
-            ? 'bg-green-900 text-green-400'
-            : 'bg-red-900 text-red-400'
+            ? 'bg-[#00cc44] text-[#080808]'
+            : 'bg-[#ff2d2d] text-white'
         }`}>
-          {option.fits_budget ? '✅ Fits budget' : '❌ Over budget'}
+          {option.fits_budget ? 'FITS BUDGET' : 'OVER BUDGET'}
         </span>
       </div>
 
       {/* Booking platform */}
-      <p className="text-gray-400 text-sm">
-        📱 Book on: <span className="text-gray-200">{option.booking_platform}</span>
-      </p>
+      <div className="px-4 pb-3 font-mono text-[#888888] text-xs">
+        📱 BOOK ON: <span className="text-white">{option.booking_platform.toUpperCase()}</span>
+      </div>
 
       {/* Notes */}
       {option.notes && (
-        <p className="text-yellow-400 text-xs bg-yellow-950/50 rounded px-2 py-1">
-          💡 {option.notes}
-        </p>
+        <div className="px-4 pb-3 font-mono text-[#ff6b00] text-xs">
+          💡 {option.notes.toUpperCase()}
+        </div>
       )}
     </div>
   )
@@ -89,15 +117,28 @@ function StepByStep({ steps }) {
   if (!steps || steps.length === 0) return null
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 sm:p-5">
-      <p className="text-white font-semibold text-base mb-3">📝 Step by Step</p>
-      <ol className="space-y-2">
-        {steps.map((step, i) => (
-          <li key={i} className="text-gray-300 text-sm pl-1">
-            {step}
-          </li>
-        ))}
-      </ol>
+    <div className="space-y-4 mb-4 rescue-section">
+      <p className="font-display font-bold text-white text-lg uppercase tracking-wide">
+        STEP BY STEP
+      </p>
+      <div className="space-y-4">
+        {steps.map((step, i) => {
+          // Strip "Step N:" prefix
+          const cleanedText = step.replace(/^Step\s+\d+:\s*/i, '')
+
+          return (
+            <div key={i} className="flex gap-4 items-start">
+              {/* Number block */}
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#ff2d2d] flex items-center justify-center font-mono font-bold text-white text-sm rounded-none flex-shrink-0">
+                {i + 1}
+              </div>
+              <p className="text-[#888888] font-mono text-sm leading-relaxed pt-1">
+                {cleanedText}
+              </p>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -108,28 +149,36 @@ function BudgetStatus({ budgetStatus }) {
   const hasShortfall = budgetStatus.shortfall && budgetStatus.shortfall !== 'null'
 
   return (
-    <div className={`rounded-lg p-4 sm:p-5 border ${
+    <div className={`p-4 mb-4 rescue-section rounded-none border-y border-r border-[#2a2a2a] ${
       hasShortfall
-        ? 'bg-red-950 border-red-800'
-        : 'bg-gray-900 border-gray-800'
+        ? 'bg-[#111111] border-l-4 border-[#ff2d2d]'
+        : 'bg-[#111111] border-l-4 border-[#00cc44]'
     }`}>
-      <p className="text-white font-semibold text-base mb-3">💰 Budget Status</p>
-      <div className="grid grid-cols-2 gap-3 text-sm">
+      <p className="font-mono text-xs tracking-widest text-[#444444] uppercase mb-3">
+        BUDGET STATUS
+      </p>
+      <div className="grid grid-cols-2 gap-4 mb-3">
         <div>
-          <p className="text-gray-500 text-xs">Your Budget</p>
-          <p className="text-white font-medium">{budgetStatus.user_budget}</p>
+          <p className="font-mono text-[#444444] text-xs tracking-widest mb-1 uppercase">YOUR BUDGET</p>
+          <p className="font-mono font-bold text-white text-2xl">{budgetStatus.user_budget}</p>
         </div>
         <div>
-          <p className="text-gray-500 text-xs">Cheapest Option</p>
-          <p className="text-white font-medium">{budgetStatus.cheapest_option_cost}</p>
+          <p className="font-mono text-[#444444] text-xs tracking-widest mb-1 uppercase">CHEAPEST OPTION</p>
+          <p className="font-mono font-bold text-white text-2xl">{budgetStatus.cheapest_option_cost}</p>
         </div>
       </div>
 
-      {hasShortfall && (
-        <p className="mt-3 text-red-400 text-sm font-medium">
-          ⚠️ {budgetStatus.shortfall}
-        </p>
-      )}
+      <div className="mt-3 pt-3 border-t border-[#2a2a2a]">
+        {hasShortfall ? (
+          <p className="font-mono text-[#ff2d2d] text-xs tracking-widest uppercase">
+            ❌ {budgetStatus.shortfall.toUpperCase()}
+          </p>
+        ) : (
+          <p className="font-mono text-[#00cc44] text-xs tracking-widest uppercase">
+            ✅ ALL OPTIONS FIT YOUR BUDGET
+          </p>
+        )}
+      </div>
     </div>
   )
 }
@@ -140,18 +189,21 @@ function RefundTip({ tip }) {
   if (!tip) return null
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-      <button
-        type="button"
+    <div className="bg-[#111111] border-l-4 border-[#2a2a2a] p-4 mb-4 rescue-section rounded-none">
+      <div
         onClick={() => setExpanded(!expanded)}
-        className="w-full text-left p-4 sm:p-5 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+        className="flex justify-between items-center cursor-pointer"
       >
-        <span className="text-white font-semibold text-base">💸 Refund Tip</span>
-        <span className="text-gray-400 text-sm">{expanded ? '▲' : '▼'}</span>
-      </button>
+        <span className="font-mono text-[#888888] text-xs tracking-widest uppercase">
+          💸 REFUND & COMPENSATION
+        </span>
+        <span className="font-mono text-[#444444] text-xs transform transition-transform duration-200">
+          {expanded ? '▲' : '▼'}
+        </span>
+      </div>
       {expanded && (
-        <div className="px-4 pb-4 sm:px-5 sm:pb-5">
-          <p className="text-gray-300 text-sm leading-relaxed">{tip}</p>
+        <div className="mt-3 pt-3 border-t border-[#2a2a2a]">
+          <p className="text-[#888888] font-mono text-xs leading-relaxed">{tip}</p>
         </div>
       )}
     </div>
@@ -161,9 +213,10 @@ function RefundTip({ tip }) {
 function RescuePlan({ rescuePlan }) {
   if (!rescuePlan) return null
 
+  // If it's a fallback due to JSON parsing failure
   if (rescuePlan.is_fallback) {
-    const hasSummary = !!rescuePlan.crisis_summary;
-    const hasAction = !!rescuePlan.immediate_action;
+    const hasSummary = !!rescuePlan.crisis_summary
+    const hasAction = !!rescuePlan.immediate_action
 
     return (
       <div className="space-y-4">
@@ -174,27 +227,27 @@ function RescuePlan({ rescuePlan }) {
           }
         `}</style>
 
-        <div className="rounded-lg p-6 border bg-yellow-950 border-yellow-700 space-y-4">
-          <p className="font-semibold text-lg text-yellow-400">
-            ⚠️ Couldn't fully parse the rescue plan. Here's what we recovered:
+        <div className="bg-[#111111] border-l-4 border-[#ff2d2d] p-6 rounded-none space-y-4">
+          <p className="font-mono text-lg font-bold text-[#ff2d2d] uppercase tracking-wider">
+            ⚠️ INCOMPLETE RESPONSE RECOVERED
           </p>
           {(hasSummary || hasAction) ? (
             <div className="space-y-3">
               {hasSummary && (
-                <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-                  <p className="text-gray-500 text-xs font-semibold mb-1">Crisis Summary</p>
-                  <p className="text-gray-300 text-sm">{rescuePlan.crisis_summary}</p>
+                <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-none p-4">
+                  <p className="text-[#444444] font-mono text-xs font-bold tracking-widest uppercase mb-1">Crisis Summary</p>
+                  <p className="text-[#888888] font-mono text-sm leading-relaxed">{rescuePlan.crisis_summary}</p>
                 </div>
               )}
               {hasAction && (
-                <div className="bg-orange-950 border-l-4 border-orange-500 rounded-r-lg p-4">
-                  <p className="text-orange-400 font-semibold text-xs mb-1">⚡ Do This RIGHT NOW</p>
-                  <p className="text-white text-sm">{rescuePlan.immediate_action}</p>
+                <div className="bg-[#111111] border-l-4 border-[#ff6b00] p-4 rounded-none">
+                  <p className="text-[#ff6b00] font-mono text-xs font-bold tracking-widest uppercase mb-1">⚡ Do This RIGHT NOW</p>
+                  <p className="text-white font-display font-bold text-base leading-snug">{rescuePlan.immediate_action}</p>
                 </div>
               )}
             </div>
           ) : (
-            <p className="text-gray-300 text-sm">
+            <p className="text-[#888888] font-mono text-sm leading-relaxed">
               Gemini response was incomplete. Please try again — this sometimes happens on complex routes.
             </p>
           )}
@@ -204,7 +257,8 @@ function RescuePlan({ rescuePlan }) {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-base"
+          className="w-full bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-95 text-white font-display font-bold text-lg uppercase tracking-widest py-5 rounded-none transition-all duration-150 cursor-pointer border-none"
+          style={{ minHeight: '56px' }}
         >
           🔄 Try Again
         </button>
@@ -217,8 +271,9 @@ function RescuePlan({ rescuePlan }) {
   return (
     <div className="space-y-4">
       {/* Crisis summary */}
-      <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 sm:p-5">
-        <p className="text-gray-400 text-sm">{rescuePlan.crisis_summary}</p>
+      <div className="bg-[#111111] border-l-4 border-[#2a2a2a] p-4 mb-4 rescue-section rounded-none">
+        <p className="font-mono text-[#444444] text-xs tracking-widest mb-2 uppercase">SITUATION</p>
+        <p className="text-[#888888] font-mono text-sm leading-relaxed">{rescuePlan.crisis_summary}</p>
       </div>
 
       {/* Immediate action */}
@@ -226,8 +281,15 @@ function RescuePlan({ rescuePlan }) {
 
       {/* Options */}
       {hasOptions && (
-        <div className="space-y-3">
-          <p className="text-white font-semibold text-lg">📋 Your Rescue Options</p>
+        <div className="space-y-3 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <span className="font-display font-bold text-white text-lg uppercase tracking-wide">
+              RESCUE OPTIONS
+            </span>
+            <span className="font-mono text-[#ff2d2d] text-sm uppercase">
+              [{rescuePlan.options.length}] FOUND
+            </span>
+          </div>
           {rescuePlan.options.map((option) => (
             <OptionCard key={option.rank} option={option} />
           ))}
@@ -236,9 +298,9 @@ function RescuePlan({ rescuePlan }) {
 
       {/* Edge case: vague input or non-travel — no options, just show immediate_action above */}
       {!hasOptions && (
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 text-center">
-          <p className="text-gray-400 text-sm">
-            Provide more details about your travel crisis to get rescue options.
+        <div className="bg-[#111111] border border-[#2a2a2a] rounded-none p-4 text-center rescue-section">
+          <p className="text-[#888888] font-mono text-sm leading-relaxed">
+            PROVIDE MORE DETAILS ABOUT YOUR TRAVEL CRISIS TO GET RESCUE OPTIONS.
           </p>
         </div>
       )}
@@ -247,14 +309,14 @@ function RescuePlan({ rescuePlan }) {
       <StepByStep steps={rescuePlan.what_to_do_now} />
 
       {/* Budget status */}
-      <BudgetStatus budgetStatus={rescuePlan.budget_status} />
+      {hasOptions && <BudgetStatus budgetStatus={rescuePlan.budget_status} />}
 
       {/* Refund tip */}
       <RefundTip tip={rescuePlan.refund_tip} />
 
       {/* Disclaimer */}
       {rescuePlan.disclaimer && (
-        <p className="text-gray-600 text-xs text-center px-4">
+        <p className="text-[#444444] font-mono text-xs text-center px-4 pt-4 border-t border-[#2a2a2a] mt-4 tracking-wide uppercase">
           {rescuePlan.disclaimer}
         </p>
       )}

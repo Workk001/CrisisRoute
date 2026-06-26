@@ -21,11 +21,11 @@ function App() {
   // Edge case #10: API key missing
   if (!API_KEY) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-        <div className="bg-yellow-900 border border-yellow-600 rounded-lg p-6 max-w-lg text-center">
-          <p className="text-yellow-400 text-lg font-semibold">⚠️ API key not configured</p>
-          <p className="text-yellow-300 mt-2 text-sm">
-            Add <code className="bg-yellow-950 px-2 py-0.5 rounded text-yellow-200">VITE_GEMINI_API_KEY</code> to your <code className="bg-yellow-950 px-2 py-0.5 rounded text-yellow-200">.env.local</code> file and restart the dev server.
+      <div className="min-h-screen bg-[#080808] flex items-center justify-center p-4">
+        <div className="bg-[#111111] border-l-4 border-[#ffcc00] p-6 max-w-lg text-center rounded-none">
+          <p className="text-[#ffcc00] font-mono text-lg font-bold uppercase tracking-wider">⚠️ API KEY NOT CONFIGURED</p>
+          <p className="text-[#888888] mt-2 text-sm font-mono leading-relaxed">
+            ADD <code className="bg-[#1a1a1a] px-2 py-0.5 rounded-none text-[#ffcc00]">VITE_GEMINI_API_KEY</code> TO YOUR <code className="bg-[#1a1a1a] px-2 py-0.5 rounded-none text-[#ffcc00]">.env.local</code> FILE AND RESTART THE DEV SERVER.
           </p>
         </div>
       </div>
@@ -121,30 +121,30 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-[#080808] text-white font-display">
       {/* Header */}
-      <header className="border-b border-gray-800 px-4 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold flex items-center gap-2">
-              <span className="text-2xl">🚨</span> CrisisRoute
-            </h1>
-            <p className="text-gray-400 text-sm">AI Travel Crisis Assistant</p>
-          </div>
-          {phase !== 'input' && (
-            <button
-              type="button"
-              onClick={handleStartOver}
-              className="text-sm text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 rounded-lg px-3 py-1.5 transition-colors"
-            >
-              New Crisis
-            </button>
-          )}
+      <header className="sticky top-0 z-50 bg-[#080808] border-b-2 border-[#2a2a2a] py-4 px-6 flex justify-between items-center">
+        <div className="flex flex-col">
+          <h1 className="text-xl font-display font-bold text-white tracking-widest uppercase flex items-center gap-2">
+            <span className="text-2xl">🚨</span> CRISISROUTE
+          </h1>
+          <p className="text-[#444444] font-mono text-xs tracking-widest">
+            AI TRAVEL CRISIS ASSISTANT
+          </p>
         </div>
+        {phase === 'result' && (
+          <button
+            type="button"
+            onClick={handleStartOver}
+            className="border-2 border-[#2a2a2a] hover:border-white text-[#888888] hover:text-white font-mono text-xs tracking-widest uppercase px-4 py-2 transition-all duration-150 rounded-none cursor-pointer"
+          >
+            New Crisis
+          </button>
+        )}
       </header>
 
       {/* Main content */}
-      <main className="max-w-3xl mx-auto px-4 py-8">
+      <main className="max-w-2xl mx-auto px-4 py-6 pb-32">
         {phase === 'input' && (
           <CrisisInput onSubmit={handleCrisisSubmit} />
         )}
@@ -167,20 +167,17 @@ function App() {
         {phase === 'error' && error && (
           <div className="space-y-4">
             {/* Error display */}
-            <div className={`rounded-lg p-6 border ${
-              error.type === 'parse_failure'
-                ? 'bg-yellow-950 border-yellow-700'
-                : 'bg-red-950 border-red-800'
-            }`}>
-              <p className={`font-semibold text-lg ${
-                error.type === 'parse_failure' ? 'text-yellow-400' : 'text-red-400'
-              }`}>
-                {error.type === 'parse_failure' ? '⚠️' : '❌'} {error.message}
+            <div className="bg-[#111111] border-l-4 border-[#ff2d2d] p-6 rounded-none">
+              <p className="font-mono text-[#ff2d2d] text-lg font-bold uppercase tracking-wider">
+                {error.type === 'parse_failure' ? '⚠️ PARSE FAILURE' : '❌ ERROR'}
+              </p>
+              <p className="text-[#888888] font-mono text-sm mt-2">
+                {error.message}
               </p>
 
               {/* Edge case #6 fallback: raw text display */}
               {error.raw && (
-                <pre className="mt-4 bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm text-gray-300 overflow-x-auto max-h-96 whitespace-pre-wrap">
+                <pre className="mt-4 bg-[#1a1a1a] border border-[#2a2a2a] rounded-none p-4 text-sm text-[#888888] overflow-x-auto max-h-96 whitespace-pre-wrap font-mono">
                   {error.raw}
                 </pre>
               )}
@@ -190,7 +187,8 @@ function App() {
             <button
               type="button"
               onClick={handleStartOver}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors text-base"
+              className="w-full bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-95 text-white font-display font-bold text-lg uppercase tracking-widest py-5 rounded-none transition-all duration-150 cursor-pointer border-none flex items-center justify-center gap-2"
+              style={{ minHeight: '56px' }}
             >
               🔄 Try Again
             </button>
@@ -199,9 +197,9 @@ function App() {
       </main>
 
       {/* Footer disclaimer */}
-      <footer className="border-t border-gray-800 mt-auto">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <p className="text-gray-600 text-xs text-center">
+      <footer className="border-t border-[#2a2a2a] mt-4">
+        <div className="max-w-2xl mx-auto px-4 py-4">
+          <p className="text-[#444444] font-mono text-xs text-center tracking-wide">
             Prices and availability are approximate. Verify on the respective platform before making payment. CrisisRoute is not a booking engine.
           </p>
         </div>
