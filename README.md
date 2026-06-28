@@ -17,9 +17,7 @@
 </p>
 
 <p>
-  <a href="https://crisis-route-jwlow4x2t-workks-projects.vercel.app/"><strong>🚀 Live Demo</strong></a> · 
-  <a href="#demo"><strong>📽️ Watch Demo</strong></a> · 
-  <a href="#how-it-works"><strong>⚡ How It Works</strong></a>
+  <a href="https://crisis-route-jwlow4x2t-workks-projects.vercel.app/"><strong>🚀 Live Demo</strong></a>
 </p>
 
 <br />
@@ -35,7 +33,6 @@
 > Most people spend 45 minutes in panic — checking 4 apps, standing in queues, calling family.  
 > **CrisisRoute solves it in 10 seconds.**
 
-## 📽️ Demo
 <div align="center">
 
 <img src="src/assets/landingpage.png" alt="CrisisRoute Landing Page" width="800" />
@@ -57,41 +54,7 @@ by the airline. I need to reach Ahmedabad by 10 PM tonight.
 I have ₹1500 left. What do I do?
 ```
 
-Expected output in under 10 seconds:
-- ✅ Free involuntary rebooking option (₹0 under DGCA guidelines)
-- ✅ Next available train with real train number and timing
-- ✅ Bus alternatives from Sumerpur/Borivali
-- ✅ Step-by-step action plan with platform names
-- ✅ DGCA compensation rights (up to ₹7,500)
 
-## ⚡ How It Works
-
-```
-User describes crisis in plain text
-           ↓
-CrisisRoute sends to Gemini 2.5 Flash
-           ↓
-Gemini searches Google in real-time
-(live flights, trains, buses — not training data)
-           ↓
-Structured rescue plan returned as JSON
-           ↓
-React UI renders ranked options instantly
-```
-
-Three things make this work:
-
-**1. Google Search Grounding**  
-Gemini doesn't guess — it searches Google before every response. 
-Real flight numbers. Real train schedules. Real prices.
-
-**2. India-First Context**  
-The system prompt is trained on Indian operators — IndiGo, IRCTC, 
-GSRTC, MSRTC, DGCA regulations. Not generic travel advice.
-
-**3. Direct Booking Links**  
-Every rescue option includes a one-tap link to IRCTC, IndiGo, 
-RedBus, or the relevant platform. From crisis to booking in two taps.
 
 ## 🎯 Features
 
