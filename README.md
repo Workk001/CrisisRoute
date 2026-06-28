@@ -36,9 +36,16 @@
 > **CrisisRoute solves it in 10 seconds.**
 
 ## 📽️ Demo
-
 <div align="center">
-  <img src="docs/demo-landing.png" alt="CrisisRoute Landing Screen" width="800" />
+
+<img src="src/assets/landingpage.png" alt="CrisisRoute Landing Page" width="800" />
+<p><em>Industrial brutalist landing — describe your crisis, get your rescue plan</em></p>
+
+<br />
+
+<img src="src/assets/resultpage.png" alt="CrisisRoute Rescue Plan Output" width="800" />
+<p><em>Real rescue options with live data — flights, trains, buses ranked by arrival and cost</em></p>
+
 </div>
 
 <br />
