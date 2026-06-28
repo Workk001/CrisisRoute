@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <a href="https://crisisroute-workk001.vercel.app"><strong>🚀 Live Demo</strong></a> · 
+  <a href="https://crisis-route-jwlow4x2t-workks-projects.vercel.app/"><strong>🚀 Live Demo</strong></a> · 
   <a href="#demo"><strong>📽️ Watch Demo</strong></a> · 
   <a href="#how-it-works"><strong>⚡ How It Works</strong></a>
 </p>
@@ -223,7 +223,7 @@ MIT
 <div align="center">
   <p>Built with 🚨 for Vibe2Ship 2026</p>
   <p>
-    <a href="https://crisisroute-workk001.vercel.app">Live Demo</a> · 
+    <a href="https://crisis-route-jwlow4x2t-workks-projects.vercel.app/">Live Demo</a> · 
     <a href="https://aistudio.google.com">Powered by Google AI Studio</a>
   </p>
 </div>
