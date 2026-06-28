@@ -43,7 +43,7 @@ function ChatFollowUp({ onSend, chatHistory, loading }) {
                   {entry.data.options && entry.data.options.length > 0 && (
                     <div className="border-t border-[#2a2a2a] pt-2 mt-2 space-y-1.5">
                       {entry.data.options.map((opt) => (
-                        <p key={opt.rank} className="text-gray-300">
+                        <p key={opt.rank} className="text-gray-300 font-mono tabular-nums text-xs">
                           #{opt.rank} {opt.operator.toUpperCase()} — {opt.estimated_cost}
                         </p>
                       ))}
@@ -57,8 +57,8 @@ function ChatFollowUp({ onSend, chatHistory, loading }) {
       )}
 
       {/* Fixed bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#080808] border-t-2 border-[#2a2a2a] px-4 py-3 pb-[calc(12px+env(safe-area-inset-bottom))] z-40">
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#080808] border-t-2 border-[#2a2a2a] px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-50">
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto flex gap-3">
           <input
             id="followup-input"
             type="text"
@@ -66,14 +66,15 @@ function ChatFollowUp({ onSend, chatHistory, loading }) {
             onChange={(e) => setText(e.target.value)}
             placeholder='Ask a follow-up... e.g. "What if I take the bus instead?"'
             disabled={loading}
-            className="followup-input flex-1 bg-[#111111] border border-[#2a2a2a] focus:border-[#ff2d2d] focus:outline-none rounded-none px-4 py-3 font-mono text-white text-sm placeholder:text-[#444444] transition-colors duration-150 disabled:opacity-50"
-            style={{ fontSize: '16px' }}
+            className="followup-input flex-1 bg-[#111111] border border-[#2a2a2a] focus:border-[#ff2d2d] focus:outline-none rounded-none px-4 py-3 font-mono text-white text-sm placeholder:text-[#444444] transition-[border-color,box-shadow] duration-150 disabled:opacity-50"
+            style={{ fontSize: '16px', minHeight: '44px' }}
           />
           <button
             type="submit"
             id="send-followup"
             disabled={loading || !text.trim()}
-            className="bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-95 disabled:bg-[#1a1a1a] disabled:text-[#444444] disabled:cursor-not-allowed text-white font-mono font-bold text-sm uppercase tracking-widest px-5 py-3 rounded-none flex-shrink-0 transition-all duration-150 border-none cursor-pointer"
+            className="bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-[0.96] disabled:bg-[#1a1a1a] disabled:text-[#444444] disabled:cursor-not-allowed text-white font-mono font-bold text-xs uppercase tracking-widest px-5 rounded-none flex-shrink-0 transition-[transform,background-color] duration-75 border-none cursor-pointer"
+            style={{ minHeight: '44px', minWidth: '44px' }}
           >
             {loading ? '...' : 'SEND →'}
           </button>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { startCrisisSession, sendFollowUp, resetSession } from './lib/gemini'
 import CrisisInput from './components/CrisisInput'
 import LoadingState from './components/LoadingState'
@@ -7,16 +7,17 @@ import ChatFollowUp from './components/ChatFollowUp'
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY
 
-function minDelay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 function App() {
   const [phase, setPhase] = useState('input') // 'input' | 'loading' | 'result' | 'error'
   const [rescuePlan, setRescuePlan] = useState(null)
   const [chatHistory, setChatHistory] = useState([])
   const [error, setError] = useState(null)
   const [followUpLoading, setFollowUpLoading] = useState(false)
+  const [loadingComplete, setLoadingComplete] = useState(false)
+
+  const handleLoadingComplete = useCallback(() => {
+    setPhase('result')
+  }, [])
 
   // Edge case #10: API key missing
   if (!API_KEY) {
@@ -37,17 +38,15 @@ function App() {
     setError(null)
     setRescuePlan(null)
     setChatHistory([])
+    setLoadingComplete(false)
     resetSession()
 
     try {
-      const [result] = await Promise.all([
-        startCrisisSession(crisisText),
-        minDelay(3000),
-      ])
+      const result = await startCrisisSession(crisisText)
 
       if (result.success) {
         setRescuePlan(result.data)
-        setPhase('result')
+        setLoadingComplete(true)
       } else {
         // Edge case #6: JSON parse failure — show fallback
         setError({
@@ -118,6 +117,7 @@ function App() {
     setRescuePlan(null)
     setChatHistory([])
     setError(null)
+    setLoadingComplete(false)
   }
 
   return (
@@ -136,7 +136,8 @@ function App() {
           <button
             type="button"
             onClick={handleStartOver}
-            className="border-2 border-[#2a2a2a] hover:border-white text-[#888888] hover:text-white font-mono text-xs tracking-widest uppercase px-4 py-2 transition-all duration-150 rounded-none cursor-pointer"
+            className="border-2 border-[#2a2a2a] hover:border-white text-[#888888] hover:text-white font-mono text-xs tracking-widest uppercase px-4 rounded-none cursor-pointer active:scale-[0.96] transition-[transform,border-color,color] duration-75 flex items-center justify-center"
+            style={{ minHeight: '44px' }}
           >
             New Crisis
           </button>
@@ -144,13 +145,13 @@ function App() {
       </header>
 
       {/* Main content */}
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-32">
+      <main className="max-w-4xl mx-auto px-6 py-6 pb-32">
         {phase === 'input' && (
           <CrisisInput onSubmit={handleCrisisSubmit} />
         )}
 
         {phase === 'loading' && (
-          <LoadingState />
+          <LoadingState isComplete={loadingComplete} onComplete={handleLoadingComplete} />
         )}
 
         {phase === 'result' && rescuePlan && (
@@ -187,7 +188,7 @@ function App() {
             <button
               type="button"
               onClick={handleStartOver}
-              className="w-full bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-95 text-white font-display font-bold text-lg uppercase tracking-widest py-5 rounded-none transition-all duration-150 cursor-pointer border-none flex items-center justify-center gap-2"
+              className="w-full bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-[0.96] text-white font-display font-bold text-lg uppercase tracking-widest py-5 rounded-none transition-[transform,background-color] duration-75 cursor-pointer border-none flex items-center justify-center gap-2"
               style={{ minHeight: '56px' }}
             >
               🔄 Try Again
@@ -198,7 +199,7 @@ function App() {
 
       {/* Footer disclaimer */}
       <footer className="border-t border-[#2a2a2a] mt-4">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-6 py-4">
           <p className="text-[#444444] font-mono text-xs text-center tracking-wide">
             Prices and availability are approximate. Verify on the respective platform before making payment. CrisisRoute is not a booking engine.
           </p>

@@ -209,7 +209,6 @@ export async function startCrisisSession(userCrisisText) {
     });
     clearTimeout(timeoutId);
     const raw = result.response.text();
-    console.log("[CrisisRoute] Raw Gemini response:", raw);
     return parseGeminiResponse(raw);
   } catch (err) {
     clearTimeout(timeoutId);
@@ -241,7 +240,6 @@ export async function sendFollowUp(message) {
     });
     clearTimeout(timeoutId);
     const raw = result.response.text();
-    console.log("[CrisisRoute] Raw follow-up response:", raw);
     return parseGeminiResponse(raw);
   } catch (err) {
     clearTimeout(timeoutId);
@@ -267,7 +265,9 @@ function validateAndReturn(parsed) {
   for (const field of required) {
     if (!parsed[field]) throw new Error(`Missing field: ${field}`);
   }
-  if (!Array.isArray(parsed.options)) throw new Error("Options must be array");
+  if (!Array.isArray(parsed.options) || parsed.options.length === 0) {
+    throw new Error("Options array is empty or missing");
+  }
   return { success: true, data: parsed };
 }
 
@@ -282,7 +282,7 @@ export function parseGeminiResponse(raw) {
     try {
       const direct = JSON.parse(cleaned);
       return validateAndReturn(direct);
-    } catch (e) {}
+    } catch {}
 
     // Try extracting JSON object
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
@@ -291,7 +291,7 @@ export function parseGeminiResponse(raw) {
     const parsed = JSON.parse(jsonMatch[0]);
     return validateAndReturn(parsed);
 
-  } catch (err) {
+  } catch {
     let crisis_summary = null;
     let immediate_action = null;
     try {
@@ -313,16 +313,8 @@ export function parseGeminiResponse(raw) {
           .replace(/\\t/g, '\t')
           .replace(/\\\\/g, '\\');
       }
-    } catch (e) {}
+    } catch {}
 
-    return {
-      success: true,
-      data: {
-        is_fallback: true,
-        raw,
-        crisis_summary,
-        immediate_action
-      }
-    };
+    return { success: false, raw, error: "JSON extraction failed — no valid JSON found in response" };
   }
 }

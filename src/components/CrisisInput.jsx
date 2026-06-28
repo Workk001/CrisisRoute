@@ -44,10 +44,10 @@ function CrisisInput({ onSubmit }) {
     <div className="space-y-6">
       {/* Hero section inside CrisisInput since it is the landing/input screen */}
       <div className="pt-16 pb-8 max-w-2xl mx-auto px-6">
-        <h2 className="font-display font-bold text-5xl text-white leading-none tracking-tight mb-2 uppercase">
+        <h2 className="font-display font-bold text-5xl text-white leading-none tracking-tight mb-2 uppercase text-wrap-balance">
           TRAVEL WENT WRONG.
         </h2>
-        <h3 className="font-display font-bold text-5xl text-[#ff2d2d] leading-none tracking-tight mb-8 uppercase">
+        <h3 className="font-display font-bold text-5xl text-[#ff2d2d] leading-none tracking-tight mb-8 uppercase text-wrap-balance">
           WE FIX IT IN SECONDS.
         </h3>
         <p className="font-mono text-[#888888] text-sm tracking-wide">
@@ -66,7 +66,7 @@ function CrisisInput({ onSubmit }) {
               if (validationError) setValidationError('')
             }}
             placeholder="e.g. My IndiGo flight from Mumbai to Ahmedabad at 6 PM got cancelled. Need to reach by 10 PM. Budget ₹1500."
-            className="crisis-input bg-[#111111] border-2 border-[#2a2a2a] focus:border-[#ff2d2d] focus:outline-none rounded-none p-4 w-full min-h-[160px] resize-none font-mono text-white text-sm placeholder:text-[#444444] transition-colors duration-150 pb-10"
+            className="crisis-input bg-[#111111] border-2 border-[#2a2a2a] focus:border-[#ff2d2d] focus:outline-none rounded-none p-4 w-full min-h-[160px] resize-none font-mono text-white text-sm placeholder:text-[#444444] transition-[border-color,box-shadow] duration-150 pb-10"
             style={{ fontSize: '16px' }}
           />
 
@@ -85,7 +85,7 @@ function CrisisInput({ onSubmit }) {
         <button
           type="submit"
           id="submit-crisis"
-          className="w-full bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-95 text-white font-display font-bold text-lg uppercase tracking-widest py-5 rounded-none transition-all duration-150 cursor-pointer border-none flex items-center justify-center gap-2"
+          className="w-full bg-[#ff2d2d] hover:bg-[#cc0000] active:scale-[0.96] text-white font-display font-bold text-lg uppercase tracking-widest py-5 rounded-none transition-[transform,background-color] duration-75 cursor-pointer border-none flex items-center justify-center gap-2"
           style={{ minHeight: '56px' }}
         >
           🚨 GET MY RESCUE PLAN →
@@ -105,7 +105,8 @@ function CrisisInput({ onSubmit }) {
                   setText(ex.text)
                   setValidationError('')
                 }}
-                className="bg-[#111111] border border-[#2a2a2a] hover:border-[#ff2d2d] hover:text-white text-[#888888] font-mono text-xs px-3 py-2.5 rounded-none cursor-pointer transition-all duration-150 text-left w-full"
+                className="bg-[#111111] border border-[#2a2a2a] hover:border-[#ff2d2d] hover:text-white text-[#888888] font-mono text-xs px-3 rounded-none cursor-pointer transition-[transform,border-color,color] duration-150 text-left w-full active:scale-[0.96]"
+                style={{ minHeight: '44px' }}
               >
                 {ex.label}
               </button>
